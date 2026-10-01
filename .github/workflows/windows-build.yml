@@ -28,10 +28,10 @@ jobs:
           -p:IncludeNativeLibrariesForSelfExtract=true
           -p:DebugType=None
           -p:DebugSymbols=false
-          --output artifacts/WiFiCat-win-x64
+          --output artifacts/wifi-mob-win-x64
       - uses: actions/upload-artifact@v4
         with:
-          name: WiFiCat-win-x64
-          path: artifacts/WiFiCat-win-x64/WiFiCat.exe
+          name: wifi-mob-win-x64
+          path: artifacts/wifi-mob-win-x64/wifi-mob.exe
           if-no-files-found: error
           retention-days: 14

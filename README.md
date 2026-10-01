@@ -1,4 +1,4 @@
-# WiFiCat
+# wifi-mob
 
 一隻懸浮在桌面上的點陣寵物，會依當前 Wi-Fi 訊號強度改變外觀，幫你走動找家中 Wi-Fi 死角。
 
@@ -10,17 +10,17 @@
 
 ## 安裝（一般使用者）
 
-1. 從 [GitHub Releases](https://github.com/louis70109/wifi-mob/releases) 下載最新的 `WiFiCat-x.y.z.zip`
-2. 解壓縮，把 `WiFiCat.app` 拖進 `/Applications/`
+1. 從 [GitHub Releases](https://github.com/louis70109/wifi-mob/releases) 下載最新的 `wifi-mob-x.y.z.zip`
+2. 解壓縮，把 `wifi-mob.app` 拖進 `/Applications/`
 3. 首次開啟：
    - AirDrop 過來：右鍵 → 打開 → 打開
-   - 網路下載：先在 Terminal 執行 `xattr -dr com.apple.quarantine "/Applications/WiFiCat.app"`
+   - 網路下載：先在 Terminal 執行 `xattr -dr com.apple.quarantine "/Applications/wifi-mob.app"`
 4. 系統會問一次「允許存取 Wi-Fi 資訊」，按允許
 
 ## Windows
 
 1. 在 [Actions → Windows build](https://github.com/louis70109/wifi-mob/actions/workflows/windows-build.yml) 開啟最新成功的執行紀錄。
-2. 下載 `WiFiCat-win-x64` artifact，解壓縮後執行 `WiFiCat.exe`（自包含，不需另外安裝 .NET）。
+2. 下載 `wifi-mob-win-x64` artifact，解壓縮後執行 `wifi-mob.exe`（自包含，不需另外安裝 .NET）。
 3. 楓之谷 Mob 原圖首次載入需網路，之後快取在 `%LOCALAPPDATA%\WiFiCat\mobs`。
 
 ## 使用

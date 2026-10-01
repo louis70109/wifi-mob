@@ -7,7 +7,7 @@
 
 ## Context
 
-WiFiCat 要反映的是訊號強弱，不是做完整 Wi-Fi 掃描器。macOS 12 之後，若想從 CoreWLAN 讀取 SSID，通常需要 Location 授權，且 App 還必須從 LaunchServices session 啟動；BSSID 在實務上更接近長期鎖死，不能把它當可靠資料來源。這些條件會把一個原本只想顯示即時品質的小工具，變成要解釋權限、沙盒與啟動方式的複雜桌面程式。相對地，`WiFiMonitor` 內的 `CWWiFiClient.shared().interface()?.rssiValue()` 可以直接取得目前連線的 RSSI，正好足夠驅動 `Quality.classify(rssi:)` 與 `AppState` 的顯示流程。
+wifi-mob 要反映的是訊號強弱，不是做完整 Wi-Fi 掃描器。macOS 12 之後，若想從 CoreWLAN 讀取 SSID，通常需要 Location 授權，且 App 還必須從 LaunchServices session 啟動；BSSID 在實務上更接近長期鎖死，不能把它當可靠資料來源。這些條件會把一個原本只想顯示即時品質的小工具，變成要解釋權限、沙盒與啟動方式的複雜桌面程式。相對地，`WiFiMonitor` 內的 `CWWiFiClient.shared().interface()?.rssiValue()` 可以直接取得目前連線的 RSSI，正好足夠驅動 `Quality.classify(rssi:)` 與 `AppState` 的顯示流程。
 
 ## Decision
 

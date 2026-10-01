@@ -3,7 +3,7 @@
 - Status: Accepted
 - Date: 2026-10-01
 
-WiFiCat provides a SwiftUI macOS app and a WPF Windows app. Public GitHub Actions workflows build the macOS release package and a self-contained Windows x64 executable.
+wifi-mob provides a SwiftUI macOS app and a WPF Windows app. Public GitHub Actions workflows build the macOS release package and a self-contained Windows x64 executable.
 
 ## Context
 
@@ -13,8 +13,8 @@ The macOS package is ad-hoc signed and is not notarized. This keeps the app stra
 
 ## Decision
 
-- Run the Windows build workflow on pushes and pull requests to `main`; publish a self-contained `WiFiCat.exe` artifact.
-- Run the macOS release workflow for semantic-version tags; execute tests, build and package `WiFiCat.app`, then publish the zip.
+- Run the Windows build workflow on pushes and pull requests to `main`; publish a self-contained `wifi-mob.exe` artifact.
+- Run the macOS release workflow for semantic-version tags; execute tests, build and package `wifi-mob.app`, then publish the zip.
 - Fetch MapleStory mob sprites from their public source URLs and cache them locally; do not commit downloaded image files or credentials.
 - Keep the GitHub Actions token scoped to the release job and do not store secrets in the repository.
 

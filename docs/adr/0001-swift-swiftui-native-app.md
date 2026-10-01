@@ -7,7 +7,7 @@
 
 ## Context
 
-WiFiCat 的目標很單純：在家中走動時，即時讀取目前連線 Wi-Fi 的 RSSI dBm，快速找出訊號死角。這個需求第一個卡點不是 UI，而是資料來源。一般 Web app 就算能做漂亮介面，也拿不到實際的 RSSI 數值；`navigator.connection` 最多提供粗略連線資訊，無法支援 `Quality.classify(rssi:)` 這種以 dBm 為核心的分級邏輯。另一條路是 Electron，但對一個只需常駐角落、顯示 `PetWindowView` 與 `MenuBarExtra` 的小程式來說，整包 Chromium 與 Node.js 過重，啟動、記憶體與分發體積都不划算。
+wifi-mob 的目標很單純：在家中走動時，即時讀取目前連線 Wi-Fi 的 RSSI dBm，快速找出訊號死角。這個需求第一個卡點不是 UI，而是資料來源。一般 Web app 就算能做漂亮介面，也拿不到實際的 RSSI 數值；`navigator.connection` 最多提供粗略連線資訊，無法支援 `Quality.classify(rssi:)` 這種以 dBm 為核心的分級邏輯。另一條路是 Electron，但對一個只需常駐角落、顯示 `PetWindowView` 與 `MenuBarExtra` 的小程式來說，整包 Chromium 與 Node.js 過重，啟動、記憶體與分發體積都不划算。
 
 ## Decision
 
@@ -23,6 +23,6 @@ WiFiCat 的目標很單純：在家中走動時，即時讀取目前連線 Wi-Fi
 
 ## Alternatives Considered
 
-- Electron：可快速做桌面 app，但體積與資源佔用過高，對 WiFiCat 這種單功能常駐工具不划算。
+- Electron：可快速做 dashboard app，但體積與資源佔用過高，對 wifi-mob 這種單功能常駐工具不划算。
 - Web + `navigator.connection`：可部署容易，但拿不到 RSSI dBm，無法滿足核心需求。
 - Objective-C：同樣能呼叫 macOS API，但語言與專案可讀性、維護性不如現代 Swift，沒有必要回退。

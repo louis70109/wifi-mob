@@ -1,6 +1,6 @@
-# WiFiCat Contributor Guide
+# wifi-mob Contributor Guide
 
-WiFiCat is a floating desktop companion that reflects current Wi-Fi signal quality and helps users compare signal strength between rooms.
+wifi-mob is a floating desktop companion that reflects current Wi-Fi signal quality and helps users compare signal strength between rooms.
 
 ## Platforms
 
@@ -26,7 +26,7 @@ dotnet publish windows/WiFiCat.Windows/WiFiCat.Windows.csproj `
   -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-GitHub Actions builds a self-contained Windows executable on pushes and pull requests to `main`, and publishes it as the `WiFiCat-win-x64` artifact. The macOS release workflow runs on semantic-version tags (`vMAJOR.MINOR.PATCH`).
+GitHub Actions builds a self-contained Windows executable on pushes and pull requests to `main`, and publishes it as the `wifi-mob-win-x64` artifact. The macOS release workflow runs on semantic-version tags (`vMAJOR.MINOR.PATCH`).
 
 ## Release versions
 

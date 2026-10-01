@@ -58,17 +58,17 @@ NOTES_FILE=$(mktemp)
   echo ""
   echo "解壓 zip → 雙擊 \`安裝.command\` 自動安裝，或手動："
   echo ""
-  echo "1. 拖 \`WiFiCat.app\` 進 \`/Applications/\`"
+  echo "1. 拖 \`wifi-mob.app\` 進 \`/Applications/\`"
   echo "2. Terminal 執行："
   echo '   ```sh'
-  echo "   xattr -dr com.apple.quarantine \"/Applications/WiFiCat.app\""
+  echo "   xattr -dr com.apple.quarantine \"/Applications/wifi-mob.app\""
   echo '   ```'
 } > "$NOTES_FILE"
 
 gh release create "$TAG" \
-  --title "WiFiCat $VERSION" \
+  --title "wifi-mob $VERSION" \
   --notes-file "$NOTES_FILE" \
-  "dist/WiFiCat-$VERSION.zip"
+  "dist/wifi-mob-$VERSION.zip"
 
 rm -f "$NOTES_FILE"
 

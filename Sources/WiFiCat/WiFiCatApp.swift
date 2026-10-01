@@ -102,7 +102,7 @@ struct PetWindowView: View {
         )
         .onAppear  { monitor.start() }
         .onDisappear { monitor.stop() }
-        .alert("關於 WiFiCat v1.0.0", isPresented: $showAbout) {
+        .alert("關於 wifi-mob", isPresented: $showAbout) {
             Button("OK") {}
         } message: {
             Text("""
@@ -211,7 +211,7 @@ struct MenuBarPanel: View {
                 .padding(.vertical, 8)
         }
         .background(Color(white: 0.10))
-        .alert("關於 WiFiCat", isPresented: $showAbout) {
+        .alert("關於 wifi-mob", isPresented: $showAbout) {
             Button("OK") {}
         } message: {
             Text("dBm 僅來自目前連線的 Wi-Fi，非附近所有 AP 掃描結果。")
@@ -569,7 +569,7 @@ final class SettingsWindowController {
             backing: .buffered,
             defer: false
         )
-        p.title = "WiFiCat 設定"
+        p.title = "wifi-mob 設定"
         p.contentView = hostingView
         p.center()
         p.isReleasedWhenClosed = false

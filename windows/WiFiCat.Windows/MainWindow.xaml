@@ -1,7 +1,7 @@
 <Window x:Class="WiFiCat.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WiFiCat"
+        Title="wifi-mob"
         Width="310"
         Height="390"
         WindowStyle="None"
@@ -26,7 +26,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" MouseLeftButtonDown="DragHandle_MouseLeftButtonDown">
-                <TextBlock Text="WiFiCat"
+                <TextBlock Text="wifi-mob"
                            VerticalAlignment="Center"
                            FontFamily="Consolas"
                            FontSize="15"

@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# 打包 WiFiCat 為 .app bundle + ad-hoc 簽章 + zip
+# 打包 wifi-mob 為 .app bundle + ad-hoc 簽章 + zip
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
-APP_NAME="WiFiCat"
-BUNDLE_ID="com.local.wificat"
-VERSION="1.8.1"
+APP_NAME="wifi-mob"
+EXECUTABLE_NAME="WiFiCat"
+BUNDLE_ID="com.louis70109.wifi-mob"
+VERSION="1.8.2"
 BUILD="1"
 
 DIST="$ROOT/dist"
 APP="$DIST/$APP_NAME.app"
-BIN="$ROOT/.build/release/$APP_NAME"
+BIN="$ROOT/.build/release/$EXECUTABLE_NAME"
 
 if [[ ! -x "$BIN" ]]; then
   echo "找不到 release binary，先跑 swift build -c release" >&2
@@ -21,7 +22,7 @@ fi
 rm -rf "$DIST"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-cp "$BIN" "$APP/Contents/MacOS/$APP_NAME"
+cp "$BIN" "$APP/Contents/MacOS/$EXECUTABLE_NAME"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -31,7 +32,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleName</key><string>$APP_NAME</string>
   <key>CFBundleDisplayName</key><string>$APP_NAME</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
-  <key>CFBundleExecutable</key><string>$APP_NAME</string>
+  <key>CFBundleExecutable</key><string>$EXECUTABLE_NAME</string>
   <key>CFBundleVersion</key><string>$BUILD</string>
   <key>CFBundleShortVersionString</key><string>$VERSION</string>
   <key>CFBundlePackageType</key><string>APPL</string>
@@ -58,7 +59,7 @@ cat > "$STAGE/安裝.command" <<'INSTALL'
 set -e
 cd "$(dirname "$0")"
 
-APP="WiFiCat.app"
+APP="wifi-mob.app"
 DEST="/Applications"
 
 if [[ ! -d "$APP" ]]; then
@@ -74,7 +75,7 @@ cp -R "$APP" "$DEST/"
 echo "移除 quarantine 標記 ..."
 xattr -dr com.apple.quarantine "$DEST/$APP" || true
 
-echo "啟動 WiFiCat ..."
+echo "啟動 wifi-mob ..."
 open "$DEST/$APP"
 
 echo ""
@@ -85,7 +86,7 @@ INSTALL
 chmod +x "$STAGE/安裝.command"
 
 cat > "$STAGE/README.txt" <<'README'
-WiFiCat — Wi-Fi 訊號點陣寵物（macOS）
+wifi-mob — Wi-Fi 訊號點陣寵物（macOS）
 
 最快安裝方式
 1. 雙擊「安裝.command」
@@ -94,9 +95,9 @@ WiFiCat — Wi-Fi 訊號點陣寵物（macOS）
 2. 系統會問一次「允許存取 Wi-Fi 資訊」，按允許
 
 如果不想用 .command 的手動安裝
-1. 拖 WiFiCat.app 進 /Applications/
+1. 拖 wifi-mob.app 進 /Applications/
 2. Terminal 執行：
-   xattr -dr com.apple.quarantine "/Applications/WiFiCat.app"
+   xattr -dr com.apple.quarantine "/Applications/wifi-mob.app"
 3. 從 Launchpad 或 Applications 打開
 
 用法
@@ -115,5 +116,5 @@ README
 rm -rf "$STAGE"
 
 echo "---"
-ls -lh "$APP/Contents/MacOS/$APP_NAME" "$ZIP"
+ls -lh "$APP/Contents/MacOS/$EXECUTABLE_NAME" "$ZIP"
 echo "output: $ZIP"

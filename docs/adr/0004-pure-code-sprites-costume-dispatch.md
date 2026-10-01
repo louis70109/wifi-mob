@@ -3,7 +3,7 @@
 - Status: Accepted
 - Date: 2026-07-22
 
-WiFiCat 不帶圖片素材，所有角色 sprite 都用 `[[Int]]` 與 palette 直接寫在程式裡，再由 `PetSpriteView` 依造型分派。
+wifi-mob 不帶圖片素材，所有角色 sprite 都用 `[[Int]]` 與 palette 直接寫在程式裡，再由 `PetSpriteView` 依造型分派。
 
 ## Context
 

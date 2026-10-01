@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "WiFiCat",
+    name: "wifi-mob",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(

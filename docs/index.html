@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WiFiCat — Architecture Decision Records</title>
+  <title>wifi-mob — Architecture Decision Records</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -323,7 +323,7 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="site-title" href="#/">WiFiCat</a>
+    <a class="site-title" href="#/">wifi-mob</a>
     <span class="site-subtitle">Wi-Fi Signal Desktop Pet · macOS + Windows</span>
     <a class="gh-link" href="https://github.com/louis70109/wifi-mob" target="_blank" rel="noopener" title="Repository">
       <svg viewBox="0 0 24 24" aria-label="GitHub"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.41 7.86 10.94.57.1.78-.25.78-.55 0-.27-.01-1-.01-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11.03 11.03 0 0 1 2.89-.39c.98 0 1.97.13 2.89.39 2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.73.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.21.66.79.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
@@ -335,7 +335,7 @@
 
   <!-- Home view -->
   <section id="view-home">
-    <h1 class="hero-title">WiFiCat</h1>
+    <h1 class="hero-title">wifi-mob</h1>
     <p class="hero-desc">
       一隻懸浮桌面的點陣寵物，依目前 Wi-Fi 訊號品質呈現狀態。
       提供 SwiftUI macOS 版與 WPF Windows 版；Windows x64 執行檔由 GitHub Actions 建置。
@@ -405,7 +405,7 @@
   function showHome() {
     $('view-home').style.display = 'block';
     $('view-adr').style.display  = 'none';
-    document.title = 'WiFiCat — Architecture Decision Records';
+    document.title = 'wifi-mob — Architecture Decision Records';
   }
 
   function showAdr(slug) {
@@ -424,7 +424,7 @@
     }
 
     body.innerHTML = '<p class="state-msg">載入中...</p>';
-    document.title = adr ? adr.title + ' — WiFiCat ADR' : slug + ' — WiFiCat ADR';
+    document.title = adr ? adr.title + ' — wifi-mob ADR' : slug + ' — wifi-mob ADR';
 
     fetch('./adr/' + slug + '.md')
       .then(function(res) {
