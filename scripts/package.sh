@@ -23,6 +23,8 @@ rm -rf "$DIST"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 cp "$BIN" "$APP/Contents/MacOS/$EXECUTABLE_NAME"
+# Strip DWARF debug data, which embeds the local source path.
+strip -S "$APP/Contents/MacOS/$EXECUTABLE_NAME"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
