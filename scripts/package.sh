@@ -7,7 +7,7 @@ ROOT="$(pwd)"
 APP_NAME="wifi-mob"
 EXECUTABLE_NAME="WiFiCat"
 BUNDLE_ID="com.louis70109.wifi-mob"
-VERSION="1.8.2"
+VERSION="1.8.3"
 BUILD="1"
 
 DIST="$ROOT/dist"
