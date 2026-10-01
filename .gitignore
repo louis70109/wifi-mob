@@ -1,0 +1,13 @@
+.build/
+.swiftpm/
+Package.resolved
+dist/
+.DS_Store
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+windows/**/bin/
+windows/**/obj/
+windows/.vs/
+artifacts/

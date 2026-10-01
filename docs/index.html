@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WiFiCat — Architecture Decision Records</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --border: #d2d2d7;
+      --text: #1d1d1f;
+      --text-muted: #6e6e73;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --code-bg: #f0f0f2;
+      --pre-bg: #1c1c1e;
+      --pre-text: #e5e5ea;
+      --card-hover: #f0f0f5;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111113;
+        --surface: #1c1c1e;
+        --border: #38383a;
+        --text: #f5f5f7;
+        --text-muted: #98989d;
+        --accent: #3b9eff;
+        --accent-hover: #5aaeff;
+        --code-bg: #2c2c2e;
+        --pre-bg: #000000;
+        --pre-text: #e5e5ea;
+        --card-hover: #28282a;
+        --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+      }
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "PingFang TC", "Helvetica Neue", sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: underline; }
+    a:hover { color: var(--accent-hover); }
+
+    /* ── Layout ── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 56px;
+    }
+
+    .site-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .site-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .gh-link {
+      display: flex;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .gh-link:hover { color: var(--text); }
+    .gh-link svg { width: 22px; height: 22px; fill: currentColor; }
+
+    .main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Home ── */
+    #view-home { display: block; }
+    #view-adr  { display: none; }
+
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-desc {
+      font-size: 0.975rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-desc a { color: var(--accent); }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .adr-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .adr-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      transition: background .15s, box-shadow .15s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .adr-card:hover {
+      background: var(--card-hover);
+      box-shadow: var(--shadow);
+      color: inherit;
+    }
+
+    .adr-number {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      white-space: nowrap;
+    }
+
+    .adr-title {
+      font-size: 0.975rem;
+      font-weight: 500;
+    }
+
+    .adr-arrow {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── ADR Reader ── */
+    .back-bar {
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.875rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+    }
+    .back-btn:hover { color: var(--accent-hover); }
+
+    .gh-view-link {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .gh-view-link:hover { color: var(--accent); }
+
+    .adr-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 2.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* Markdown rendered content */
+    .md-body { font-size: 0.975rem; line-height: 1.75; }
+
+    .md-body h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .md-body h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+    }
+    .md-body h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+    }
+    .md-body p { margin-bottom: 1rem; }
+
+    .md-body ul, .md-body ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .md-body li { margin-bottom: 0.3rem; }
+
+    .md-body code {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 0.875em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+
+    .md-body pre {
+      background: var(--pre-bg);
+      color: var(--pre-text);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .md-body pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .md-body blockquote {
+      border-left: 3px solid var(--border);
+      padding-left: 1rem;
+      color: var(--text-muted);
+      margin: 0 0 1rem;
+    }
+
+    .md-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+    }
+    .md-body th, .md-body td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .md-body th {
+      background: var(--code-bg);
+      font-weight: 600;
+    }
+
+    .md-body a { color: var(--accent); }
+    .md-body a:hover { color: var(--accent-hover); }
+
+    .md-body hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── States ── */
+    .state-msg {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .site-subtitle { display: none; }
+      .hero-title { font-size: 1.5rem; }
+      .adr-content { padding: 1.25rem 1rem; }
+      .adr-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="#/">WiFiCat</a>
+    <span class="site-subtitle">Wi-Fi Signal Desktop Pet · macOS + Windows</span>
+    <a class="gh-link" href="https://github.com/louis70109/wifi-mob" target="_blank" rel="noopener" title="Repository">
+      <svg viewBox="0 0 24 24" aria-label="GitHub"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.41 7.86 10.94.57.1.78-.25.78-.55 0-.27-.01-1-.01-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11.03 11.03 0 0 1 2.89-.39c.98 0 1.97.13 2.89.39 2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.73.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.21.66.79.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- Home view -->
+  <section id="view-home">
+    <h1 class="hero-title">WiFiCat</h1>
+    <p class="hero-desc">
+      一隻懸浮桌面的點陣寵物，依目前 Wi-Fi 訊號品質呈現狀態。
+      提供 SwiftUI macOS 版與 WPF Windows 版；Windows x64 執行檔由 GitHub Actions 建置。
+      <a href="https://github.com/louis70109/wifi-mob/releases" target="_blank" rel="noopener">macOS Releases</a>；
+      <a href="https://github.com/louis70109/wifi-mob/actions/workflows/windows-build.yml" target="_blank" rel="noopener">Windows CI artifacts</a>。
+    </p>
+
+    <p class="section-label">Architecture Decision Records</p>
+    <ul class="adr-list" id="adr-list"></ul>
+  </section>
+
+  <!-- ADR reader view -->
+  <section id="view-adr">
+    <div class="back-bar">
+      <button class="back-btn" onclick="navigate('#/')">&#8592; 回列表</button>
+      <a class="gh-view-link" id="gh-view-link" href="#" target="_blank" rel="noopener">在 Repository 上檢視</a>
+    </div>
+    <div class="adr-content">
+      <div class="md-body" id="md-body"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+        onerror="window.__markedFailed=true"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default', securityLevel: 'loose' });
+  window.__mermaid = mermaid;
+</script>
+<script>
+  const ADR_LIST = [
+    { slug: '0001-swift-swiftui-native-app',             number: '0001', title: 'Swift + SwiftUI 原生 macOS App' },
+    { slug: '0002-corewlan-rssi-only-no-location',       number: '0002', title: '只讀 RSSI，不申請 Location 權限' },
+    { slug: '0003-floating-transparent-pet-window',      number: '0003', title: '懸浮無邊框透明桌面寵物視窗' },
+    { slug: '0004-pure-code-sprites-costume-dispatch',   number: '0004', title: '純程式編碼 Sprite + 造型調度系統' },
+    { slug: '0005-local-release-ad-hoc-signing',         number: '0005', title: 'GitHub Actions 跨平台建置與簽章' },
+  ];
+
+  const REPO = 'https://github.com/louis70109/wifi-mob';
+
+  function $(id) { return document.getElementById(id); }
+
+  // Build card list once
+  (function buildList() {
+    const ul = $('adr-list');
+    ADR_LIST.forEach(function(adr) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.className = 'adr-card';
+      a.href = '#/adr/' + adr.slug;
+      a.innerHTML =
+        '<span class="adr-number">ADR-' + adr.number + '</span>' +
+        '<span class="adr-title">' + escapeHtml(adr.title) + '</span>' +
+        '<span class="adr-arrow">&#8250;</span>';
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  }());
+
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showHome() {
+    $('view-home').style.display = 'block';
+    $('view-adr').style.display  = 'none';
+    document.title = 'WiFiCat — Architecture Decision Records';
+  }
+
+  function showAdr(slug) {
+    const adr = ADR_LIST.find(function(a) { return a.slug === slug; });
+    $('view-home').style.display = 'none';
+    $('view-adr').style.display  = 'block';
+
+    const ghLink = $('gh-view-link');
+    ghLink.href = REPO + '/blob/main/docs/adr/' + slug + '.md';
+
+    const body = $('md-body');
+
+    if (window.__markedFailed) {
+      body.textContent = 'Markdown 渲染器載入失敗，請確認網路。';
+      return;
+    }
+
+    body.innerHTML = '<p class="state-msg">載入中...</p>';
+    document.title = adr ? adr.title + ' — WiFiCat ADR' : slug + ' — WiFiCat ADR';
+
+    fetch('./adr/' + slug + '.md')
+      .then(function(res) {
+        if (!res.ok) throw new Error('not found');
+        return res.text();
+      })
+      .then(function(text) {
+        // marked v4+ uses marked.parse; v2 uses marked()
+        const html = (typeof marked.parse === 'function')
+          ? marked.parse(text)
+          : marked(text);
+        body.innerHTML = html;
+        // 把 ```mermaid 程式碼區塊轉成 mermaid 圖
+        const blocks = body.querySelectorAll('pre code.language-mermaid');
+        blocks.forEach(function(el, i) {
+          const src = el.textContent;
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.id = 'mermaid-' + Date.now() + '-' + i;
+          div.textContent = src;
+          el.closest('pre').replaceWith(div);
+        });
+        if (blocks.length && window.__mermaid) {
+          window.__mermaid.run({ querySelector: '#md-body .mermaid' })
+            .catch(function(err) { console.warn('mermaid render fail:', err); });
+        }
+      })
+      .catch(function() {
+        body.innerHTML = '<p class="state-msg">找不到此 ADR（' + escapeHtml(slug) + '.md）。</p>';
+      });
+  }
+
+  function navigate(hash) {
+    window.location.hash = hash;
+  }
+
+  function route() {
+    const hash = window.location.hash || '#/';
+    const adrMatch = hash.match(/^#\/adr\/([^/]+)$/);
+    if (adrMatch) {
+      showAdr(adrMatch[1]);
+    } else {
+      showHome();
+    }
+  }
+
+  window.addEventListener('hashchange', route);
+  document.addEventListener('DOMContentLoaded', route);
+</script>
+</body>
+</html>

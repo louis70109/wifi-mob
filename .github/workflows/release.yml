@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract and validate version
+        id: v
+        env:
+          RELEASE_REF: ${{ github.ref_name }}
+        run: |
+          version="${RELEASE_REF#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "tag must use vMAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Update package version
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          sed -i.bak "s/^VERSION=.*/VERSION=\"$VERSION\"/" scripts/package.sh
+          rm -f scripts/package.sh.bak
+
+      - name: Test
+        run: swift test
+
+      - name: Build release
+        run: swift build -c release
+
+      - name: Package
+        run: bash scripts/package.sh
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          TAG="v$VERSION"
+          PREV_TAG=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || echo "")
+          NOTES_FILE=$(mktemp)
+          {
+            echo "## 更新內容"
+            echo ""
+            if [[ -n "$PREV_TAG" ]]; then
+              git log "$PREV_TAG..$TAG" --pretty=format:"- %s" --no-merges | grep -v "^- release: v" || true
+              echo ""
+              echo ""
+              echo "**Full changelog:** $PREV_TAG...$TAG"
+            else
+              git log "$TAG" --pretty=format:"- %s" --no-merges | grep -v "^- release: v" || true
+            fi
+            echo ""
+            echo ""
+            echo "## 安裝"
+            echo ""
+            echo "解壓 zip → 雙擊 \`安裝.command\` 自動安裝，或手動："
+            echo ""
+            echo "1. 拖 \`WiFiCat.app\` 進 \`/Applications/\`"
+            echo "2. Terminal 執行："
+            echo '   ```sh'
+            echo "   xattr -dr com.apple.quarantine \"/Applications/WiFiCat.app\""
+            echo '   ```'
+          } > "$NOTES_FILE"
+
+          gh release create "$TAG" \
+            --title "WiFiCat $VERSION" \
+            --notes-file "$NOTES_FILE" \
+            "dist/WiFiCat-$VERSION.zip"
+          rm -f "$NOTES_FILE"
