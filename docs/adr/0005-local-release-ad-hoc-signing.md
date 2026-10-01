@@ -14,13 +14,13 @@ The macOS package is ad-hoc signed and is not notarized. This keeps the app stra
 ## Decision
 
 - Run the Windows build workflow on pushes and pull requests to `main`; publish a self-contained `wifi-mob.exe` artifact.
-- Run the macOS release workflow for semantic-version tags; execute tests, build and package `wifi-mob.app`, then publish the zip.
+- Run the release workflow on semantic-version tags; build the macOS zip and Windows executable, then attach both assets to the GitHub Release.
 - Fetch MapleStory mob sprites from their public source URLs and cache them locally; do not commit downloaded image files or credentials.
 - Keep the GitHub Actions token scoped to the release job and do not store secrets in the repository.
 
 ## Consequences
 
-- Windows users can download a self-contained x64 executable from the GitHub Actions artifact.
+- Windows users can download a self-contained x64 executable from either the GitHub Actions artifact or the GitHub Release.
 - macOS releases remain ad-hoc signed and are not notarized; the first launch may require approval.
 - Mob sprites require network access on first selection and are available from the local cache afterward.
 

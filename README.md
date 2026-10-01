@@ -19,8 +19,8 @@
 
 ## Windows
 
-1. 在 [Actions → Windows build](https://github.com/louis70109/wifi-mob/actions/workflows/windows-build.yml) 開啟最新成功的執行紀錄。
-2. 下載 `wifi-mob-win-x64` artifact，解壓縮後執行 `wifi-mob.exe`（自包含，不需另外安裝 .NET）。
+1. 從 [GitHub Releases](https://github.com/louis70109/wifi-mob/releases/latest) 下載 `wifi-mob.exe`。
+2. 雙擊執行（自包含，不需另外安裝 .NET）。
 3. 楓之谷 Mob 原圖首次載入需網路，之後快取在 `%LOCALAPPDATA%\WiFiCat\mobs`。
 
 ## 使用

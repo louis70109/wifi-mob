@@ -5,7 +5,48 @@ on:
     tags: ['v*']
 
 jobs:
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Extract and validate version
+        id: v
+        shell: pwsh
+        env:
+          RELEASE_REF: ${{ github.ref_name }}
+        run: |
+          $version = $env:RELEASE_REF -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw 'tag must use vMAJOR.MINOR.PATCH'
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+      - name: Publish self-contained Windows executable
+        run: >
+          dotnet publish windows/WiFiCat.Windows/WiFiCat.Windows.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=None
+          -p:DebugSymbols=false
+          -p:Version=${{ steps.v.outputs.version }}
+          -p:AssemblyVersion=${{ steps.v.outputs.version }}.0
+          -p:FileVersion=${{ steps.v.outputs.version }}.0
+          --output artifacts/wifi-mob-win-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wifi-mob-windows-release
+          path: artifacts/wifi-mob-win-x64/wifi-mob.exe
+          if-no-files-found: error
+          retention-days: 1
   build:
+    needs: build-windows
     runs-on: macos-latest
     permissions:
       contents: write
@@ -41,6 +82,11 @@ jobs:
 
       - name: Package
         run: bash scripts/package.sh
+      - name: Download Windows release executable
+        uses: actions/download-artifact@v4
+        with:
+          name: wifi-mob-windows-release
+          path: dist/windows
 
       - name: Create GitHub Release
         env:
@@ -72,10 +118,13 @@ jobs:
             echo '   ```sh'
             echo "   xattr -dr com.apple.quarantine \"/Applications/wifi-mob.app\""
             echo '   ```'
+            echo ""
+            echo "Windows x64：下載 \`wifi-mob.exe\`，直接執行（自包含，無需另外安裝 .NET）。"
           } > "$NOTES_FILE"
 
           gh release create "$TAG" \
             --title "wifi-mob $VERSION" \
             --notes-file "$NOTES_FILE" \
-            "dist/wifi-mob-$VERSION.zip"
+            "dist/wifi-mob-$VERSION.zip" \
+            "dist/windows/wifi-mob.exe"
           rm -f "$NOTES_FILE"

@@ -26,14 +26,14 @@ dotnet publish windows/WiFiCat.Windows/WiFiCat.Windows.csproj `
   -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-GitHub Actions builds a self-contained Windows executable on pushes and pull requests to `main`, and publishes it as the `wifi-mob-win-x64` artifact. The macOS release workflow runs on semantic-version tags (`vMAJOR.MINOR.PATCH`).
+GitHub Actions builds a self-contained Windows executable on pushes and pull requests to `main` as the `wifi-mob-win-x64` artifact. On semantic-version tags, the release workflow builds both macOS and Windows assets and attaches them to the GitHub Release.
 
 ## Release versions
 
 - Follow semantic versioning.
 - New user-visible features → minor version.
 - Bug fixes and visual corrections → patch version.
-- `bash scripts/release.sh <version>` requires a clean worktree, runs tests and packaging, creates a tag, and publishes a GitHub release.
+- `bash scripts/release.sh <version>` requires a clean worktree, runs tests and macOS packaging, creates and pushes a tag, then lets GitHub Actions build and publish both release assets.
 
 ## Project structure
 

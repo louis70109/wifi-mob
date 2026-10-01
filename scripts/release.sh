@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 發佈新版本：build + 打包 + tag + push + GitHub Release
+# 發佈新版本：build + 打包 + tag + push；GitHub Actions 發佈雙平台 assets
 set -euo pipefail
 
 VERSION="${1:-}"
@@ -38,40 +38,6 @@ git tag -a "$TAG" -m "$TAG"
 git push origin HEAD
 git push origin "$TAG"
 
-# 產生 release notes：從上一個 tag 到 HEAD 的 commit 訊息
-PREV_TAG=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || echo "")
-NOTES_FILE=$(mktemp)
-{
-  echo "## 更新內容"
-  echo ""
-  if [[ -n "$PREV_TAG" ]]; then
-    git log "$PREV_TAG..$TAG" --pretty=format:"- %s" --no-merges | grep -v "^- release: v" || true
-    echo ""
-    echo ""
-    echo "**Full changelog:** $PREV_TAG...$TAG"
-  else
-    git log "$TAG" --pretty=format:"- %s" --no-merges | grep -v "^- release: v" || true
-  fi
-  echo ""
-  echo ""
-  echo "## 安裝"
-  echo ""
-  echo "解壓 zip → 雙擊 \`安裝.command\` 自動安裝，或手動："
-  echo ""
-  echo "1. 拖 \`wifi-mob.app\` 進 \`/Applications/\`"
-  echo "2. Terminal 執行："
-  echo '   ```sh'
-  echo "   xattr -dr com.apple.quarantine \"/Applications/wifi-mob.app\""
-  echo '   ```'
-} > "$NOTES_FILE"
-
-gh release create "$TAG" \
-  --title "wifi-mob $VERSION" \
-  --notes-file "$NOTES_FILE" \
-  "dist/wifi-mob-$VERSION.zip"
-
-rm -f "$NOTES_FILE"
-
 echo ""
-echo "released: $TAG"
-gh release view "$TAG" --web >/dev/null 2>&1 || true
+echo "pushed tag: $TAG"
+echo "GitHub Actions will build and publish the macOS zip and Windows executable."
